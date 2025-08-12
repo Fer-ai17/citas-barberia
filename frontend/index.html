@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="index.css">
+  <title>Agenda Barbería</title>
+</head>
+<body>
+  <h1>Agendar Cita</h1>
+  <form id="formulario">
+    <input type="hidden" name="id" id="cita-id">
+    <input type="text" placeholder="Nombre" name="nombre" required />
+    <input type="text" placeholder="Teléfono" name="telefono" required />
+    <input type="text" placeholder="Servicio" name="servicio" required />
+    <select name="corte" id="corte-select" required>
+        <option value="">Seleccione un corte</option>
+        <!-- Las opciones se llenarán con JavaScript -->
+    </select>
+    <input type="date" name="fecha" required />
+    <input type="time" name="hora" required />
+    <button type="submit" id="submit-btn">Agendar</button>
+    <button type="button" id="cancel-btn" style="display: none;">Cancelar</button>
+  </form>
+
+  <h2>Citas Agendadas</h2>
+  <ul id="lista-citas"></ul>
+<script>
+   // Elementos del DOM
+const form = document.getElementById('formulario');
+const lista = document.getElementById('lista-citas');
+const submitBtn = document.getElementById('submit-btn');
+const cancelBtn = document.getElementById('cancel-btn');
+const citaIdInput = document.getElementById('cita-id');
+let editMode = false; // Controla si estamos editando una cita
+
+// Manejar envío del formulario (crear/actualizar cita)
+form.onsubmit = async (e) => {
+  e.preventDefault();
+  const formData = new FormData(form);
+  const datos = {
+    nombre: formData.get('nombre'),
+    telefono: formData.get('telefono'),
+    servicio: formData.get('servicio'),
+    fecha: formData.get('fecha'),
+    hora: formData.get('hora'),
+    corte_id: formData.get('corte') // Añadir corte_id
+  };
+  
+  const url = editMode ? `/citas/${citaIdInput.value}` : '/agendar';
+  const method = editMode ? 'PUT' : 'POST';
+  
+  await fetch(url, { 
+    method, 
+    headers: { 'Content-Type': 'application/json' }, 
+    body: JSON.stringify(datos) 
+  });
+  resetForm();
+  cargarCitas();
+};
+
+// Cargar cortes al iniciar
+document.addEventListener('DOMContentLoaded', () => {
+  cargarCortes();
+  cargarCitas();
+});
+
+// Cancelar edición y resetear formulario
+cancelBtn.onclick = () => resetForm();
+
+// Resetear formulario a estado inicial
+function resetForm() {
+  form.reset();
+  editMode = false;
+  submitBtn.textContent = 'Agendar';
+  cancelBtn.style.display = 'none';
+  citaIdInput.value = '';
+}
+
+// Cargar y mostrar todas las citas
+async function cargarCitas() {
+  const res = await fetch('/citas');
+  const citas = await res.json();
+  lista.innerHTML = '';
+  
+  citas.forEach(c => {
+    const li = document.createElement('li');
+    
+    li.innerHTML = `
+      <div class="cita-info">
+        <span class="time">${c.fecha} ${c.hora}</span>
+        <span class="name">${c.nombre}</span>
+        <span class="service">${c.servicio}</span>
+        <span class="phone">${c.telefono}</span>
+        <span class="corte">${c.corte_info}</span>
+      </div>
+      <div class="cita-actions">
+        <button class="edit-btn" onclick="editarCita(${JSON.stringify(c).replace(/"/g, '&quot;')})">Editar</button>
+        <button class="delete-btn" onclick="eliminarCita('${c.id}')">Eliminar</button>
+      </div>
+    `;
+    
+    lista.appendChild(li);
+  });
+}
+
+// Editar una cita existente
+async function editarCita(cita) {
+  editMode = true;
+  submitBtn.textContent = 'Actualizar';
+  cancelBtn.style.display = 'inline-block';
+  
+  // Llenar formulario con datos de la cita
+  citaIdInput.value = cita.id;
+  form.nombre.value = cita.nombre;
+  form.telefono.value = cita.telefono;
+  form.servicio.value = cita.servicio;
+  form.fecha.value = cita.fecha;
+  form.hora.value = cita.hora;
+  
+  // Asegurarse de que el corte seleccionado se establezca correctamente
+  if (cita.cortes_id) {
+    form.corte.value = cita.cortes_id;
+  } else {
+    form.corte.value = ""; // Si no hay corte seleccionado
+  }
+  
+  form.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Eliminar una cita
+async function eliminarCita(id) {
+  if (confirm('¿Estás seguro de eliminar esta cita?')) {
+    await fetch(`/citas/${id}`, { method: 'DELETE' });
+    cargarCitas();
+  }
+}
+
+async function cargarCortes() {
+  const res = await fetch('/cortes');
+  const cortes = await res.json();
+  const select = document.getElementById('corte-select');
+  
+  // Limpiar y llenar el select
+  select.innerHTML = '<option value="">Seleccione un corte</option>';
+  cortes.forEach(corte => {
+    const option = document.createElement('option');
+    option.value = corte.id;
+    option.textContent = `${corte.nombre} (${corte.tipo})`;
+    select.appendChild(option);
+  });
+}
+
+// Cargar citas al iniciar
+cargarCitas();
+  </script>
+</body>
+</html>

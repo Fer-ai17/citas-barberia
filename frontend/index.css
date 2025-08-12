@@ -1,0 +1,287 @@
+/* Estilos generales */
+:root {
+  --primary-color: #2b2d42;        /* Azul oscuro */
+  --secondary-color: #8d99ae;      /* Gris azulado */
+  --accent-color: #4681f0;         /* Rojo vibrante (típico de barberías) */
+  --light-color: #edf2f4;          /* Gris claro */
+  --dark-color: #1a1a2e;           /* Azul muy oscuro */
+  --border-radius: 8px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: var(--dark-color);
+  background-color: #f8f9fa;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1, h2 {
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-top: 2rem;
+  position: relative;
+  font-weight: 700;
+}
+
+h1::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 4px;
+  background: var(--accent-color);
+  margin: 0.5rem auto 1.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-top: 3rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--secondary-color);
+  font-weight: 600;
+}
+
+/* Formulario de cita */
+#formulario {
+  background: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+#formulario select {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--secondary-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+#formulario select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(43, 45, 66, 0.1);
+}
+
+#formulario select::placeholder {
+  color: var(--secondary-color);
+  opacity: 0.7;
+}
+
+#formulario input {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--secondary-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+#formulario input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(43, 45, 66, 0.1);
+}
+
+#formulario input::placeholder {
+  color: var(--secondary-color);
+  opacity: 0.7;
+}
+
+#formulario button {
+  grid-column: 1 / -1;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+#formulario button:hover {
+  background-color: #73abf3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(217, 4, 41, 0.2);
+}
+
+/* Lista de citas */
+#lista-citas {
+  list-style: none;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+}
+
+#lista-citas li {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: var(--transition);
+}
+
+#lista-citas li:last-child {
+  border-bottom: none;
+}
+
+#lista-citas li:hover {
+  background-color: var(--light-color);
+}
+
+/* Estilos para la fecha y hora */
+#lista-citas li span.time {
+  color: var(--primary-color);
+  font-weight: 500;
+  min-width: 150px;
+}
+
+#lista-citas li span.name {
+  font-weight: 600;
+}
+
+#lista-citas li span.service {
+  color: var(--accent-color);
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  #formulario {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+  
+  #lista-citas li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#lista-citas li {
+  animation: fadeIn 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+/* Retrasos para cada elemento de la lista */
+#lista-citas li:nth-child(1) { animation-delay: 0.1s; }
+#lista-citas li:nth-child(2) { animation-delay: 0.2s; }
+#lista-citas li:nth-child(3) { animation-delay: 0.3s; }
+#lista-citas li:nth-child(4) { animation-delay: 0.4s; }
+#lista-citas li:nth-child(5) { animation-delay: 0.5s; }
+
+/* Estilos para los botones de acción */
+.cita-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-btn, .delete-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.edit-btn {
+  background-color: var(--secondary-color);
+  color: rgb(242, 244, 245);
+}
+
+.edit-btn:hover {
+  background-color: #89b8e0;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+.cita-info {
+  flex-grow: 1;
+}
+
+.cita-info span {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.cita-info span.phone {
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+}
+
+.cita-info .corte {
+  display: block;
+  margin-top: 5px;
+  font-style: italic;
+  color: #555;
+}
+
+/* Estilos para el botón de cancelar */
+#cancel-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-left: 1rem;
+}
+
+#cancel-btn:hover {
+  background-color: #5a6268;
+}
